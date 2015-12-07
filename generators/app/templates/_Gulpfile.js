@@ -4,67 +4,85 @@
 
 'use strict';
 
+// ------------------------------------------------
+// Default to dev workspace
+//
+
 global.isProd = false;
 
-var gulp = require('gulp');
-var config = require('./config');
 
-var sourcemaps = require('gulp-sourcemaps');
-var gulpif = require('gulp-if');
-var browserSync = require('browser-sync');
-var del = require('del');
-var changed = require('gulp-changed');
-var imagemin = require('gulp-imagemin');
-var browserify = require('browserify');
-var babelify = require('babelify');
-var sass = require('gulp-sass');
-var autoprefixer = require('autoprefixer-core');
-var postcss = require('gulp-postcss');
-var gutil = require('gulp-util');
-var express = require('express');
-var http = require('http');
-var morgan = require('morgan');
-var runSequence = require('run-sequence');
-var plumber = require('gulp-plumber');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var uglify = require('gulp-uglify');
-var size = require('gulp-size');
-var jade = require('gulp-jade');
-var watchify = require('watchify');
-var s3 = require('gulp-s3');
-var fs = require('fs');
-var rev = require('gulp-rev');
-var revReplace = require('gulp-rev-replace');
-var revNapkin = require('gulp-rev-napkin');
-var assign = require('lodash.assign');
-var merge = require('utils-merge');
-var gzip = require('gulp-gzip');
+// ------------------------------------------------
+// Config
+//
+
+const config = require('./config');
+
+
+// ------------------------------------------------
+// Basic requires
+//
+
+const assign = require('lodash.assign');
+const autoprefixer = require('autoprefixer-core');
+const babelify = require('babelify');
+const browserify = require('browserify');
+const browserSync = require('browser-sync');
+const buffer = require('vinyl-buffer');
+const changed = require('gulp-changed');
+const del = require('del');
+const fs = require('fs');
+const gulp = require('gulp');
+const gulpif = require('gulp-if');
+const gutil = require('gulp-util');
+const http = require('http');
+const imagemin = require('gulp-imagemin');
+const jade = require('gulp-jade');
+const merge = require('utils-merge');
+const morgan = require('morgan');
+const plumber = require('gulp-plumber');
+const postcss = require('gulp-postcss');
+const rev = require('gulp-rev');
+const revNapkin = require('gulp-rev-napkin');
+const revReplace = require('gulp-rev-replace');
+const runSequence = require('run-sequence');
+const sass = require('gulp-sass');
+const size = require('gulp-size');
+const source = require('vinyl-source-stream');
+const sourcemaps = require('gulp-sourcemaps');
+const uglify = require('gulp-uglify');
+const watchify = require('watchify');
+
+
 
 // -------------------------------------------------
 //
-// Apply production enviro
+// TASKS
 // 
 // -------------------------------------------------
+
+
+
+// ------------------------------------------------
+// Apply production environment
+//
+
 gulp.task('apply-prod-environment', function(){
     process.env.NODE_ENV = 'production';
 });
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Apply dev environment
 //
-// Apply dev enviro
-// 
-// -------------------------------------------------
+
 gulp.task('apply-dev-environment', function(){
     process.env.NODE_ENV = 'development';
 });
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Copy libraries (if any)
 //
-// Copy libraries
-// 
-// -------------------------------------------------
+
 gulp.task('lib', function(){
     return gulp.src(config.lib.src)
         .pipe(uglify())
@@ -72,11 +90,9 @@ gulp.task('lib', function(){
 });
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Clean out build folder
 //
-// Clean
-// 
-// -------------------------------------------------
 
 gulp.task('clean', function(cb){
     return del([config.dist.root], cb);
@@ -85,11 +101,9 @@ gulp.task('clean', function(cb){
 
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Copy fonts
 //
-// Fonts
-// 
-// -------------------------------------------------
 
 gulp.task('fonts', function(){
     return gulp.src(config.fonts.src)
@@ -99,13 +113,18 @@ gulp.task('fonts', function(){
 
 
 
-
-// -------------------------------------------------
+// ------------------------------------------------
+// Copy over data
 //
-// Images -- Only MIN called in production
-// 
-// -------------------------------------------------
+gulp.task('data', function(){
+    return gulp.src(config.data.src)
+        .pipe(gulp.dest(config.data.dest));
+});
 
+
+// ------------------------------------------------
+// Run Image min in production
+//
 gulp.task('images', function(){
 
     return gulp.src(config.images.src)
@@ -121,6 +140,11 @@ gulp.task('images', function(){
 // Script bundling
 // 
 // -------------------------------------------------
+
+// ------------------------------------------------
+// Bundle dev scripts
+//
+
 function bundleJs(bundler){
 
     return bundler.bundle()
@@ -139,6 +163,11 @@ function bundleJs(bundler){
         .pipe(browserSync.stream({once: true}));
 }
 
+
+
+// ------------------------------------------------
+// Bundle production scripts
+//
 
 function bundleJsProd(bundler, cb){
 
@@ -161,11 +190,10 @@ function bundleJsProd(bundler, cb){
 
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Dev scipts
 //
-// JS-Dev
-// 
-// -------------------------------------------------
+
 gulp.task('scripts', function(){
     var args = merge(watchify.args, {debug: true});
     
@@ -186,11 +214,10 @@ gulp.task('scripts', function(){
 });
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Production scripts
 //
-// JS-Prod
-// 
-// -------------------------------------------------
+
 gulp.task('scripts-prod', function(cb){
 
     var args = merge(watchify.args, {debug: true});
@@ -215,11 +242,10 @@ gulp.task('scripts-prod', function(cb){
 
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Dev styles
 //
-// Dev Styles
-// 
-// -------------------------------------------------
+
 gulp.task('styles', function(){
 
     return gulp.src(config.styles.src)
@@ -238,11 +264,10 @@ gulp.task('styles', function(){
 });
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Production styles
 //
-// Production Styles
-// 
-// -------------------------------------------------
+
 gulp.task('styles-prod', function(){
 
     return gulp.src(config.styles.src)
@@ -263,29 +288,33 @@ gulp.task('styles-prod', function(){
 
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Jade views
 //
-// Views
-// 
-// -------------------------------------------------
+
 
 gulp.task('views', function(){
-    return gulp.src(config.views.src)
-        .pipe(plumber())
-        .pipe(jade())
-        .on('error', gutil.log)
-        .pipe(gulp.dest(config.views.dest));
+
+    <% if (includeJade) { %>
+        return gulp.src(config.views.src)
+            .pipe(plumber())
+            .pipe(jade())
+            .on('error', gutil.log)
+            .pipe(gulp.dest(config.views.dest));
+    <% } else { %>
+        return gulp.src(config.html.src)
+            .pipe(gulp.dest(config.html.dest));
+    <% } %>
+    
 
 });
 
 
 
-// -------------------------------------------------
-//
-// Extras
-// 
-// -------------------------------------------------
 
+// ------------------------------------------------
+// Extras (favicon, robots, etc)
+//
 gulp.task('extras', function(){
     return gulp.src(config.extras, {base: config.src})
         .pipe(gulp.dest('build'));
@@ -293,11 +322,9 @@ gulp.task('extras', function(){
 
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Rev (sometimes needs to be called manually after prod build)
 //
-// Rev
-// 
-// -------------------------------------------------
 gulp.task('rev', function(){
 
     gulp.src(['build/**/*.css', 'build/**/*.js'])
@@ -310,6 +337,9 @@ gulp.task('rev', function(){
 });
 
 
+// ------------------------------------------------
+// Replace revisions in html
+//
 gulp.task('rev-replace', ['rev'], function(){
 
     console.log('Replace started');
@@ -334,12 +364,9 @@ gulp.task('rev-replace', ['rev'], function(){
 
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Server
 //
-// Serve
-// 
-// -------------------------------------------------
-
 gulp.task('serve', function(){
 
     var server = express();
@@ -374,12 +401,9 @@ gulp.task('serve', function(){
 });
 
 
-// -------------------------------------------------
+// ------------------------------------------------
+// Browser Sync
 //
-// Sync
-// 
-// -------------------------------------------------
-
 gulp.task('browser-sync', function(){
 
     browserSync({
@@ -412,6 +436,10 @@ gulp.task('reload-images', ['images'], function(){
     browserSync.reload();
 });
 
+gulp.task('reload-data', ['data'], function(){
+    browserSync.reload();
+});
+
 
 // ------------------------------------------------
 // Main Tasks
@@ -425,6 +453,7 @@ gulp.task('dev', ['clean'], function(){
 
     runSequence([
         'apply-dev-environment',
+        'data',
         'extras',
         'lib',
         'views',
@@ -438,7 +467,7 @@ gulp.task('dev', ['clean'], function(){
     gulp.watch(config.styles.src, ['styles']);
     gulp.watch(config.views.src, ['reload-views']);
     gulp.watch(config.images.src, ['reload-images']);
-    // gulp.watch(config.scripts.src, ['reload-js']);
+    gulp.watch(config.data.src, ['reload-data']);
 
 });
 
@@ -450,6 +479,7 @@ gulp.task('prod', ['clean'], function(){
 
     runSequence([
         'apply-prod-environment',
+        'data',
         'extras',
         'scripts-prod',
         'lib',

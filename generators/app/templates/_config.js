@@ -46,9 +46,19 @@ module.exports = {
         'root': 'build'
     },
 
+    'data': {
+        'src': 'app/data/**/*',
+        'dest': 'build/data'
+    },
+
     'icons': {
         'src': 'app/icons/*',
         'dest': 'build/icons'
+    },
+
+    'lib': {
+        'src': 'app/lib/**/*',
+        'dest': 'build'
     },
 
     'src': 'app/',

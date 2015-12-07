@@ -51,7 +51,7 @@ module.exports = generators.Base.extend({
   askFor: function(){
     var done = this.async();
 
-    this.log(yosay('Hey there friend. Out of the box I include Browserify, Gulp + Headroom.js'));
+    this.log(yosay('Hey there friend. Out of the box I include Browserify, Sass, Bourbon, Async, Hammer.js, Gulp + Headroom.js'));
 
 
     var prompts = [
@@ -60,11 +60,6 @@ module.exports = generators.Base.extend({
         name: 'features',
         message: 'What more would you like?',
         choices: [
-          {
-            name: 'Sass',
-            value: 'includeSass',
-            checked: true
-          },
           {
             name: 'Jade',
             value: 'includeJade',
@@ -97,9 +92,9 @@ module.exports = generators.Base.extend({
         return features && features.indexOf(feat) !== -1;
       }
 
-      this.includeSass = hasFeature('includeSass');
       this.includeModernizr = hasFeature('includeModernizr');
       this.includeJQuery = answers.includeJQuery;
+      this.includeJade = answers.includeJade;
 
 
       done();
@@ -127,7 +122,6 @@ module.exports = generators.Base.extend({
         //options
         {
           pkg: this.pkg,
-          includeSass: this.includeSass,
           includeModernizr: this.includeModernizr,
           useBabel: this.options['babel']
         }
@@ -145,9 +139,9 @@ module.exports = generators.Base.extend({
         this.destinationPath('package.json'),
         //options
         {
-          includeSass: this.includeSass,
           includeModernizr: this.includeModernizr,
           includeJQuery: this.includeJQuery,
+          includeJade: this.includeJade,
           useBabel: this.options['babel']
         }
       );
@@ -198,20 +192,27 @@ module.exports = generators.Base.extend({
     styles: function(){
       var stylesheet;
 
-      if (this.includeSass){
-        stylesheet = 'main.scss';
-      }
-
-      else{
-        stylesheet = 'main.css';
-      }
-
+      let stylesheet = 'styles/main.scss';
 
       this.fs.copyTpl(
         this.templatePath(stylesheet),
         this.destinationPath('app/styles/' + stylesheet)
       );
     },
+
+
+    // ------------------------------------------------
+    // Data file
+    //
+    data: function(){
+
+      this.fs.copy(
+        this.templatePath('data/data.json'),
+        this.destinationPath('data/data.json')
+      );
+
+    },
+    
 
 
 
@@ -271,9 +272,21 @@ module.exports = generators.Base.extend({
     // ------------------------------------------------
     // Misc
     //
-    misc: function(){
-      mkdirp('app/images');
-      mkdirp('app/fonts');
+
+    fonts: function(){
+      this.fs.copy(
+        this.templatePath('fonts'),
+        this.destinationPath('app/fonts')
+      );
+
+    },
+
+
+    images: function(){
+      this.fs.copy(
+        this.templatePath('images'),
+        this.destinationPath('app/images')
+      );
     }
     
     
@@ -286,10 +299,10 @@ module.exports = generators.Base.extend({
   // Install Deps
   // 
   // -------------------------------------------------
-  
-  install: function(){
-    this.npmInstall();
-  },
+    // install: function(){
+  //   this.npmInstall();
+  // },
+
 
 
   // -------------------------------------------------
