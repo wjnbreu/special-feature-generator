@@ -10,15 +10,30 @@ npm install -g yo
 npm install -g generator-rbma-feature
 ```
 
-Then generate your new project:
+Then make a directory, cd into it, and generate your new project:
 
 ```bash
 yo rbma-feature
 ```
 
-## Getting To Know Yeoman
+##Options
+More options will be included shortly, but as of now, this generator comes with:
+- Gulp for building
+- Browserify for bundling
+- Sass for styles (actually SCSS)
+- Bourbon for mixins
+- Babel for ES6
+- Headroom.js for RBMA nav
+- Async cuz it helps
+- Jade for views (can be disabled in favor of vanilla HTML when scaffolding)
+- JQuery (can also be disabled when scaffolding)
 
-Yeoman has a heart of gold. He&#39;s a person with feelings and opinions, but he&#39;s very easy to work with. If you think he&#39;s too opinionated, he can be easily convinced. Feel free to [learn more about him](http://yeoman.io/).
+
+##Additional Packages
+Can be installed using npm (ie d3, three, browser-request, etc). They will be packaged up via browserify
+
+###But I Want to Use Non-NPM packages?!
+No problem. But you still need to let browserify know about it. Just set the shim in `package.json` file and include the JS from a CDN in the `index.html/jade` file, or add to the `lib` directory. Then `require('some-thing')` like normal.
 
 ## License
 
