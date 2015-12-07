@@ -64,11 +64,6 @@ module.exports = generators.Base.extend({
             name: 'Jade',
             value: 'includeJade',
             checked: true
-          },
-          {
-            name: 'Modernizr',
-            value: 'includeModernizr',
-            checked: false
           }
         ]
       },
@@ -92,9 +87,9 @@ module.exports = generators.Base.extend({
         return features && features.indexOf(feat) !== -1;
       }
 
-      this.includeModernizr = hasFeature('includeModernizr');
+      this.includeJade = hasFeature('includeJade');
       this.includeJQuery = answers.includeJQuery;
-      this.includeJade = answers.includeJade;
+      
 
 
       done();
@@ -122,7 +117,7 @@ module.exports = generators.Base.extend({
         //options
         {
           pkg: this.pkg,
-          includeModernizr: this.includeModernizr,
+          includeJade: this.includeJade,
           useBabel: this.options['babel']
         }
       );
@@ -139,7 +134,6 @@ module.exports = generators.Base.extend({
         this.destinationPath('package.json'),
         //options
         {
-          includeModernizr: this.includeModernizr,
           includeJQuery: this.includeJQuery,
           includeJade: this.includeJade,
           useBabel: this.options['babel']
@@ -176,6 +170,18 @@ module.exports = generators.Base.extend({
 
 
     // ------------------------------------------------
+    // App config
+    //
+    appConfig: function(){
+      this.fs.copyTpl(
+        this.templatePath('_config.js'),
+        this.destinationPath('config.js')
+      );
+    },
+    
+
+
+    // ------------------------------------------------
     // Scripts
     //
     scripts: function(){
@@ -190,13 +196,12 @@ module.exports = generators.Base.extend({
     // Styles
     //
     styles: function(){
-      var stylesheet;
 
       let stylesheet = 'styles/main.scss';
 
-      this.fs.copyTpl(
-        this.templatePath(stylesheet),
-        this.destinationPath('app/styles/' + stylesheet)
+      this.fs.copy(
+        this.templatePath('styles'),
+        this.destinationPath('app/styles')
       );
     },
 
@@ -299,9 +304,9 @@ module.exports = generators.Base.extend({
   // Install Deps
   // 
   // -------------------------------------------------
-    // install: function(){
-  //   this.npmInstall();
-  // },
+  install: function(){
+    this.npmInstall();
+  },
 
 
 
@@ -312,7 +317,7 @@ module.exports = generators.Base.extend({
   // -------------------------------------------------
   
   end: function(){
-    console.log('YO, all done');
+    console.log('Yo, all done. Type "gulp" to start');
   }
 
 });

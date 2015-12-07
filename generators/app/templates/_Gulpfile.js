@@ -30,6 +30,7 @@ const browserSync = require('browser-sync');
 const buffer = require('vinyl-buffer');
 const changed = require('gulp-changed');
 const del = require('del');
+const express = require('express');
 const fs = require('fs');
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
