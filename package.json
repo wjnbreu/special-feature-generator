@@ -1,19 +1,20 @@
 {
   "name": "generator-rbma-feature",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Small generator that scaffolds out RBMA special feature",
-  "homepage": "",
+  "homepage": "https://github.com/rbma/special-feature-generator",
   "author": {
-    "name": "RDS",
-    "email": "james@rds.zone",
-    "url": ""
+    "name": "James Pants",
+    "email": "james@redbullmusicacademy.com"
   },
   "files": [
     "generators/app"
   ],
+
   "main": "generators/index.js",
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "rbma"
   ],
   "dependencies": {
     "chalk": "^1.0.0",
@@ -32,7 +33,7 @@
     "gulp-nsp": "^2.1.0",
     "gulp-coveralls": "^0.1.0"
   },
-  "repository": "https://github.com/edweena/rds-cms.git",
+  "repository": "https://github.com/rbma/special-feature-generator.git",
   "scripts": {
     "prepublish": "gulp prepublish",
     "test": "gulp"
