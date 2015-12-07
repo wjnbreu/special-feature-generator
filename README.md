@@ -15,6 +15,9 @@ Then make a directory, cd into it, and generate your new project:
 ```bash
 yo rbma-feature
 ```
+##Disclaimer
+This package is new and currently being developed.
+
 
 ##Options
 More options will be included shortly, but as of now, this generator comes with:
@@ -34,6 +37,17 @@ Can be installed using npm (ie d3, three, browser-request, etc). They will be pa
 
 ###But I Want to Use Non-NPM packages?!
 No problem. But you still need to let browserify know about it. Just set the shim in `package.json` file and include the JS from a CDN in the `index.html/jade` file, or add to the `lib` directory. Then `require('some-thing')` like normal.
+
+##Serving
+Just type `gulp` or `gulp dev`
+
+##Production
+Just type `gulp prod` to package everything up nicely.
+
+##Deploy
+No deploy options included here, but once you have a folder on the specials FTP, I recommend adding [vinyl-ftp](https://www.npmjs.com/package/vinyl-ftp) as a `dev-dependency` and adding a task to the Gulpfile. Or you can just drag and drop. 
+
+But be careful... And watch out for media-house caching rules. You will need to manually run `gulp rev-replace` after running `gulp prod`.
 
 ## License
 
